@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — SecureBank{% endblock %}
+
+{% block content %}
+
+<!-- ================================================================
+     Page heading
+     ================================================================ -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="mb-0 fw-semibold">
+      <i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard
+    </h3>
+    <p class="text-muted mb-0" style="font-size:0.9rem;">
+      Manage your account below.
+    </p>
+  </div>
+</div>
+
+<!-- ================================================================
+     Balance card — full width, prominent
+     ================================================================ -->
+<div class="card border-0 shadow-sm mb-4 bg-primary text-white">
+  <div class="card-body p-4">
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <div
+          class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center"
+          style="width:56px;height:56px;"
+        >
+          <i class="bi bi-person-fill fs-3 text-white"></i>
+        </div>
+      </div>
+      <div class="col">
+        <p class="mb-0 text-white-75" style="font-size:0.85rem;">Welcome back,</p>
+        <h5 class="mb-0 fw-semibold">{{ display_name }}</h5>
+      </div>
+    </div>
+
+    <hr class="border-white border-opacity-25 my-3" />
+
+    <div class="text-center">
+      <p class="mb-1 text-white-75" style="font-size:0.85rem; letter-spacing:0.05em;">
+        AVAILABLE BALANCE
+      </p>
+      {% if balance is not none %}
+        <h1 class="display-5 fw-bold mb-0">
+          ${{ "{:,.2f}".format(balance) }}
+        </h1>
+      {% else %}
+        <p class="fs-5 mb-0 text-warning">
+          <i class="bi bi-exclamation-triangle me-1"></i>
+          Balance unavailable
+        </p>
+      {% endif %}
+      <p class="text-white-50 mt-1 mb-0" style="font-size:0.75rem;">USD</p>
+    </div>
+  </div>
+</div><!-- /balance card -->
+
+
+<!-- ================================================================
+     Transaction cards — Deposit and Withdraw side by side on desktop,
+     stacked on mobile (Bootstrap col-md-6 grid).
+     ================================================================ -->
+<div class="row g-4">
+
+  <!-- ---- Deposit ------------------------------------------------- -->
+  <div class="col-12 col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-success text-white py-3">
+        <h5 class="mb-0 fw-semibold">
+          <i class="bi bi-plus-circle-fill me-2"></i>Deposit Funds
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        <p class="text-muted mb-3" style="font-size:0.88rem;">
+          Add money to your account. Minimum amount: $0.01.
+        </p>
+        <form
+          action="{{ url_for('deposit') }}"
+          method="POST"
+          id="depositForm"
+          novalidate
+        >
+          <div class="mb-3">
+            <label for="depositAmount" class="form-label fw-medium">
+              Amount (USD)
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input
+                type="number"
+                class="form-control"
+                id="depositAmount"
+                name="amount"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                required
+              />
+            </div>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success btn-lg">
+              <i class="bi bi-arrow-down-circle me-1"></i>Deposit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div><!-- /deposit col -->
+
+  <!-- ---- Withdraw ------------------------------------------------ -->
+  <div class="col-12 col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-warning text-dark py-3">
+        <h5 class="mb-0 fw-semibold">
+          <i class="bi bi-dash-circle-fill me-2"></i>Withdraw Funds
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        <p class="text-muted mb-3" style="font-size:0.88rem;">
+          Withdraw money from your account. Cannot exceed available balance.
+        </p>
+        <form
+          action="{{ url_for('withdraw') }}"
+          method="POST"
+          id="withdrawForm"
+          novalidate
+        >
+          <div class="mb-3">
+            <label for="withdrawAmount" class="form-label fw-medium">
+              Amount (USD)
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input
+                type="number"
+                class="form-control"
+                id="withdrawAmount"
+                name="amount"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                required
+              />
+            </div>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-warning btn-lg text-dark">
+              <i class="bi bi-arrow-up-circle me-1"></i>Withdraw
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div><!-- /withdraw col -->
+
+</div><!-- /row -->
+
+<!-- ================================================================
+     Transaction history — last 10 entries, newest first
+     ================================================================ -->
+<div class="card border-0 shadow-sm mt-4">
+  <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+    <h5 class="mb-0 fw-semibold">
+      <i class="bi bi-clock-history me-2 text-secondary"></i>Recent Transactions
+    </h5>
+    <span class="badge bg-secondary">Last 10</span>
+  </div>
+
+  <div class="card-body p-0">
+    {% if transactions %}
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" class="ps-4">#</th>
+              <th scope="col">Type</th>
+              <th scope="col" class="text-end">Amount</th>
+              <th scope="col" class="pe-4 text-end">Date &amp; Time (UTC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for tx in transactions %}
+            <tr>
+              <td class="ps-4 text-muted" style="font-size:0.82rem;">{{ tx.id }}</td>
+              <td>
+                {% if tx.type == 'deposit' %}
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">
+                    <i class="bi bi-arrow-down-circle-fill me-1"></i>Deposit
+                  </span>
+                {% else %}
+                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                    <i class="bi bi-arrow-up-circle-fill me-1"></i>Withdrawal
+                  </span>
+                {% endif %}
+              </td>
+              <td class="text-end fw-medium">
+                {% if tx.type == 'deposit' %}
+                  <span class="text-success">+${{ "{:,.2f}".format(tx.amount) }}</span>
+                {% else %}
+                  <span class="text-danger">-${{ "{:,.2f}".format(tx.amount) }}</span>
+                {% endif %}
+              </td>
+              <td class="pe-4 text-end text-muted" style="font-size:0.82rem;">
+                {{ tx.created_at }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div><!-- /table-responsive -->
+    {% else %}
+      <div class="text-center text-muted py-5">
+        <i class="bi bi-inbox display-6 d-block mb-2"></i>
+        <p class="mb-0">No transactions yet. Make a deposit or withdrawal to get started.</p>
+      </div>
+    {% endif %}
+  </div><!-- /card-body -->
+</div><!-- /transaction card -->
+
+<!-- ================================================================
+     Quick info bar
+     ================================================================ -->
+<p class="text-center text-muted mt-3 mb-0" style="font-size:0.78rem;">
+  <i class="bi bi-clock me-1"></i>
+  Balance and history shown as of this page load. Refresh to see the latest.
+</p>
+
+{% endblock %}

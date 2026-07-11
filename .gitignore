@@ -1,0 +1,59 @@
+﻿# =============================================================================
+# .gitignore — Banking Web Application
+# =============================================================================
+
+# --- Python virtual environment ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- Python bytecode & caches ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.pyc
+
+# --- pytest ---
+.pytest_cache/
+.cache/
+htmlcov/
+.coverage
+coverage.xml
+*.coverage
+
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- SQLite database files ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*.swo
+*~
+
+# --- OS artefacts ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Distribution / packaging ---
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+# --- Logs ---
+*.log

@@ -1,0 +1,77 @@
+/*
+ * custom.css
+ * ----------
+ * Project-specific style overrides for the Banking Web Application.
+ *
+ * Bootstrap utility classes handle the vast majority of layout and
+ * spacing needs. Only add rules here that Bootstrap cannot cover:
+ * brand colours, custom component tweaks, or accessibility adjustments.
+ */
+
+/* -----------------------------------------------------------------------
+   Typography
+   ----------------------------------------------------------------------- */
+body {
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  color: #1f2328;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main.container {
+  /* Give the page body room to breathe so the footer never crowds content. */
+  flex: 1;
+}
+
+/* -----------------------------------------------------------------------
+   Navbar refinements
+   ----------------------------------------------------------------------- */
+.navbar-brand {
+  letter-spacing: 0.02em;
+}
+
+/* -----------------------------------------------------------------------
+   Card refinements
+   ----------------------------------------------------------------------- */
+.card {
+  border-radius: 0.625rem;
+}
+
+.card-header {
+  border-radius: 0.625rem 0.625rem 0 0 !important;
+}
+
+/* -----------------------------------------------------------------------
+   Balance display — ensure the dollar figure is always legible
+   ----------------------------------------------------------------------- */
+.display-5 {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -----------------------------------------------------------------------
+   Form inputs — slightly larger tap target on mobile
+   ----------------------------------------------------------------------- */
+@media (max-width: 576px) {
+  .form-control,
+  .btn-lg {
+    font-size: 1rem;
+  }
+}
+
+/* -----------------------------------------------------------------------
+   Footer
+   ----------------------------------------------------------------------- */
+footer {
+  border-top: 1px solid #e5e7eb;
+  background-color: #f7f8fa;
+  color: #57606a;
+  font-size: 0.78rem;
+}
+
+/* -----------------------------------------------------------------------
+   Alert icons — align vertically with text
+   ----------------------------------------------------------------------- */
+.alert i {
+  vertical-align: -0.1em;
+}
