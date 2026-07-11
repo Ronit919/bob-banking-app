@@ -274,21 +274,26 @@ def withdraw():
     raw_amount = request.form.get("amount", "").strip()
     user_id = session["user_id"]
 
-    # Step 1 — presence.
+    # Validation check 1 - Amount is required.
     if not raw_amount:
-        flash("Please enter a withdrawal amount.", "danger")
+        flash("Amount is required", "danger")
         return redirect(url_for("dashboard"))
 
-    # Step 2 — numeric conversion.
+    # Validation check 2 - Amount must be a positive number.
     try:
         amount = float(raw_amount)
     except ValueError:
-        flash("Withdrawal amount must be a valid number.", "danger")
+        flash("Amount must be greater than zero", "danger")
         return redirect(url_for("dashboard"))
 
-    # Step 3 — positive check.
     if amount <= 0:
-        flash("Withdrawal amount must be greater than zero.", "danger")
+        flash("Amount must be greater than zero", "danger")
+        return redirect(url_for("dashboard"))
+
+    # Validation check 3 - Insufficient funds check.
+    current_balance = get_balance(user_id)
+    if amount > current_balance:
+        flash("Insufficient funds", "danger")
         return redirect(url_for("dashboard"))
 
     # Step 4 — service call.
